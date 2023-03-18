@@ -20,8 +20,19 @@ def main(args):
         folder = os.path.join(args.output, bagfilename_splited)
 
         os.mkdir(folder)
-        os.mkdir(folder + '/color')
-        os.mkdir(folder + '/depth')
+        os.mkdir(f'{folder}/color')
+        os.mkdir(f'{folder}/depth')
+
+        # Set video properties
+        width = 1280
+        height = 720
+        fps = 30
+        duration = 5  # Duration in seconds
+
+        # Define the codec and create VideoWriter object
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        output_file = f'{folder}/{bagfilename_splited}.mp4'
+        out = cv2.VideoWriter(output_file, fourcc, fps, (width, height))
 
         image_color_list = []
         image_depth_list = []
@@ -46,6 +57,8 @@ def main(args):
                 t = timestamp.to_nsec()
                 cv2.imwrite(f'{folder}/color/color{t:012}.jpg', image_color)
                 cv2.imwrite(f'{folder}/depth/depth{t:012}.jpg', image_depth)
+                out.write(image_color)
+            out.release()
 
         except:
             print(bagfilename_splited + ' can\'t convert')
